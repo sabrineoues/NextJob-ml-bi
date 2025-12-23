@@ -3,29 +3,32 @@
 
 {% block content %}
 <div class="knn-page">
-    <h1>KNN JobLevel Prediction</h1>
-     <p>Discover the level of your upcoming job—just provide a few details!</p>
+    <h1>Polynomial Regression Salary Prediction</h1>
+    <p>Enter your job details to estimate your expected salary!</p>
+
     <form method="post" class="knn-form">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-field">
-                {{ field.label_tag }}   <!-- label au-dessus -->
-                {{ field }}             <!-- input -->
+                {{ field.label_tag }}
+                {{ field }}
                 {% if field.errors %}
                     <p class="error-msg">{{ field.errors }}</p>
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Predict</button>
+        <button type="submit" class="btn btn-primary">Predict Salary</button>
     </form>
 
-    {% if label %}
-        <h2 class="result-label">Predicted JobLevel: {{ label }}</h2>
-        {% if confidence %}
-            <p class="result-confidence">Confidence: {{ confidence }}%</p>
-        {% endif %}
+    {% if result %}
+        <h2 class="result-label">Predicted Salary: ${{ result|floatformat:2 }}</h2>
     {% endif %}
 
-    
+    {% if model_missing %}
+        <p class="error-msg">⚠️ Model file missing. Please check poly_pipeline_degree.pkl!</p>
+    {% endif %}
+    {% if error_message %}
+        <p class="error-msg">Error: {{ error_message }}</p>
+    {% endif %}
 </div>
 {% endblock %}
