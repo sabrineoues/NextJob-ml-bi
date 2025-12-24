@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="knn-page">
-    <h1>Polynomial Regression Salary Prediction</h1>
+    <h1>XGBoost Salary Prediction</h1>
     <p>Enter your job details to estimate your expected salary!</p>
 
     <form method="post" class="knn-form">
@@ -21,12 +21,9 @@
     </form>
 
     {% if result %}
-        <h2 class="result-label">Predicted Salary: ${{ result|floatformat:2 }}</h2>
+        <h2 class="result-label">Predicted Annual Salary: ${{ result|floatformat:2 }}</h2>
     {% endif %}
 
-    {% if model_missing %}
-        <p class="error-msg">⚠️ Model file missing. Please check poly_pipeline_degree.pkl!</p>
-    {% endif %}
     {% if error_message %}
         <p class="error-msg">Error: {{ error_message }}</p>
     {% endif %}
