@@ -8,14 +8,17 @@
 </head>
 <body>
     <header>
-        <h1>ML & BI Platform</h1>
-        <nav>
-            <a href="/dashboard/" class="{% if request.path == '/dashboard/' %}active{% endif %}">📊 Dashboard BI</a>
-            <a href="/knn/" class="{% if request.path == '/knn/' %}active{% endif %}">KNN</a>
-            <a href="/xgboost/" class="{% if request.path == '/xgboost/' %}active{% endif %}">XGBoost</a>
-            <a href="/regression/" class="{% if request.path == '/regression/' %}active{% endif %}">Regression</a>
-            <a href="/kmeans/" class="{% if request.path == '/kmeans/' %}active{% endif %}">KMeans</a>
-        </nav>
+        <div class="header-content">
+            <h1>ML & BI Platform</h1>
+            <nav class="primary-nav">
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/knn/" class="{% if request.path == '/knn/' %}active{% endif %}">Job Level Prediction</a>
+                <a href="/xgboost/" class="{% if request.path == '/xgboost/' %}active{% endif %}">Insurance Prediction</a>
+                <a href="/regression/" class="{% if request.path == '/regression/' %}active{% endif %}">Salary Prediction</a>
+               <!-- <a href="/kmeans/" class="{% if request.path == '/kmeans/' %}active{% endif %}">KMeans</a>-->
+            </nav>
+            <a href="https://app.powerbi.com/links/KXN1LK44bV?ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&pbi_source=linkShare" target="_blank" rel="noopener noreferrer" class="dashboard-btn">📊 Dashboard BI</a>
+        </div>
     </header>
 
 
