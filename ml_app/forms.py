@@ -16,7 +16,6 @@ class XGBForm(forms.Form):
     company_name = forms.CharField(label="Company Name")
     platform_name = forms.CharField(label="Platform Name")
     degree = forms.CharField(label="Degree")
-    salary = forms.FloatField(label="Salary")  # si tu veux garder le salaire
 
 
 

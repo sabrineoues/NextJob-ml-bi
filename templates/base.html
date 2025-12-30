@@ -10,8 +10,10 @@
     <header>
         <div class="header-content">
             <div class="logo-container">
-                <img src="{% static 'images/logo1.png' %}" alt="MetricCareer Logo" class="logo">
-                <h2>MetricCareer</h2>
+                <video autoplay loop muted playsinline class="logo" poster="{% static 'images/logo1.png' %}">
+                    <source src="{% static 'images/video1.mp4' %}" type="video/mp4">
+                </video>
+                <h2>NextJob</h2>
             </div>
             <nav class="primary-nav">
                 <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
@@ -30,7 +32,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>MetricCareer</h3>
+                <h3>NextJob</h3>
                 <p>ML Predictions to boost your career with 95% accuracy</p>
                 <p>Instant • Accurate • Free</p>
             </div>
@@ -48,7 +50,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 MetricCareer. All rights reserved. </p>
+            <p>&copy; 2025 NextJob. All rights reserved. </p>
         </div>
     </footer>
 </body>
