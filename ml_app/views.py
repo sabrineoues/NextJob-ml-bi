@@ -199,73 +199,132 @@ def regression_view(request):
 # SKILLS GAP / RECOMMENDATION VIEW
 # -------------------------------
 # Normalisation des skills pour comparaison
-def normalize_skill(skill: str) -> str:
-    """
-    Transforme un skill en minuscule, supprime les espaces et remplace par "_".
-    Ex: 'Deep Learning' -> 'deep_learning'
-    """
-    return skill.strip().lower().replace(" ", "_")
 
+
+# =========================
+# UTILITY FUNCTION (IMPORTANT)
+# =========================
+def clean_skill(skill):
+    """
+    Normalize skills so user input and dataset skills match
+    """
+    return (
+        skill.lower()
+        .replace("skill_", "")
+        .replace(" ", "_")
+        .strip()
+    )
+
+
+# =========================
+# MAIN VIEW
+# =========================
 def recommandation_view(request):
     form = RecommandationForm(request.POST or None)
     results = None
     error_message = None
-    models_ready = all([encoder, classifier, le, skills_cols, top_skills_by_title])
+
+    # Check models availability
+    models_ready = all([
+        encoder,
+        classifier,
+        le,
+        skills_cols,
+        top_skills_by_title
+    ])
 
     if not models_ready:
-        error_message = "Le modèle de recommandation n'est pas disponible."
+        error_message = "Recommendation model is not available."
 
     if form.is_valid() and models_ready:
         cd = form.cleaned_data
-        target_job = cd.get("job_target", "")
+
+        # -------------------------
+        # USER INPUT
+        # -------------------------
+        target_job = cd.get("job_target", "").strip().upper()
         candidate_skills_raw = cd.get("user_skills", "")
 
-        # Normalisation des skills de l'utilisateur
-        candidate_skills = [normalize_skill(s) for s in candidate_skills_raw.split(",") if s.strip()]
+        # Normalize user skills
+        candidate_skills = [
+            clean_skill(s)
+            for s in candidate_skills_raw.split(",")
+            if s.strip()
+        ]
 
-        # Vectorisation pour le modèle
+        candidate_set = set(candidate_skills)
+
+        # -------------------------
+        # BUILD INPUT VECTOR
+        # -------------------------
         cand_vector = np.zeros(len(skills_cols))
-        for skill in candidate_skills:
-            if skill in skills_cols:
-                idx = skills_cols.index(skill)
+
+        for skill in candidate_set:
+            col_name = f"skill_{skill}"
+            if col_name in skills_cols:
+                idx = skills_cols.index(col_name)
                 cand_vector[idx] = 1
+
         X_input = cand_vector.reshape(1, -1)
 
-        # Embedding et prédiction
+        # -------------------------
+        # MODEL PREDICTION
+        # -------------------------
         cand_embed = encoder.predict(X_input, verbose=0)
         probs = classifier.predict_proba(cand_embed)[0]
+
         top_idx = np.argsort(probs)[-6:][::-1]
 
         recommendations = []
+
+        # -------------------------
+        # BUILD RECOMMENDATIONS
+        # -------------------------
         for idx in top_idx:
             job = le.inverse_transform([idx])[0]
             score = round(float(probs[idx]) * 100, 2)
 
-            # Normalisation des skills du job
-            job_skills = [normalize_skill(s) for s in top_skills_by_title.get(job, [])]
+            job_skills_raw = top_skills_by_title.get(job, [])
+            job_skills = {clean_skill(s) for s in job_skills_raw}
 
-            # Calcul des matching et missing skills
-            matching = list(set(job_skills) & set(candidate_skills))
-            missing = list(set(job_skills) - set(candidate_skills))
+            matching_skills = sorted(job_skills & candidate_set)
+            missing_skills = sorted(job_skills - candidate_set)
 
             recommendations.append({
                 "job": job,
                 "score": score,
-                "matching_skills": matching,
-                "missing_skills": missing
+                "matching_skills": matching_skills,
+                "missing_skills": missing_skills[:6],
             })
 
-        target_score = recommendations[0]["score"] if recommendations else None
+        # -------------------------
+        # FORCE TARGET JOB FIRST
+        # -------------------------
+        recommendations.sort(
+            key=lambda x: (
+                x["job"].upper() != target_job,
+                -x["score"]
+            )
+        )
+
+        # -------------------------
+        # TARGET JOB STATS
+        # -------------------------
+        target_rec = next(
+            (r for r in recommendations if r["job"].upper() == target_job),
+            None
+        )
+
         results = {
             "target_job": target_job,
-            "target_score": target_score,
-            "matching_skills": list(set(candidate_skills) & set([s for rec in recommendations for s in rec["matching_skills"]])),
-            "missing_skills": list(set([s for rec in recommendations for s in rec["missing_skills"]])),
-            "recommendations": recommendations
+            "target_score": target_rec["score"] if target_rec else 0,
+            "matching_skills": target_rec["matching_skills"] if target_rec else [],
+            "missing_skills": target_rec["missing_skills"] if target_rec else [],
+            "recommendations": recommendations,
         }
 
     elif request.method == "POST" and not form.is_valid():
-        error_message = "Merci de corriger les erreurs du formulaire."
+        error_message = "Please correct the form errors."
 
     return render(request, "recommandation.html", {
         "form": form,
