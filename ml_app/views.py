@@ -151,8 +151,14 @@ def get_target_encoding(col, val):
         return float(te_map.get(val, _global_salary_mean()))
     return _global_salary_mean()
 
-salary_model = _load_model("xgb_salary_model.pkl") if os.path.exists(os.path.join(DATA_DIR, "xgb_salary_model.pkl")) else None
-feature_order = list(salary_model.feature_names_in_) if salary_model and hasattr(salary_model, "feature_names_in_") else []
+# Load regression model from ml_models directory
+try:
+    salary_model = _load_model("xgb_salary_model.pkl")
+    feature_order = list(salary_model.feature_names_in_) if hasattr(salary_model, "feature_names_in_") else []
+except (FileNotFoundError, Exception) as e:
+    logger.warning(f"Could not load xgb_salary_model.pkl: {e}")
+    salary_model = None
+    feature_order = []
 
 def regression_view(request):
     form = RegressionForm(request.POST or None)
