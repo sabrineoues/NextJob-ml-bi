@@ -2,20 +2,44 @@ from django import forms
 
 
 class KNNSampleForm(forms.Form):
-    company_name = forms.CharField(label="Company Name")
-    location = forms.CharField(label="Location")
-    salary = forms.FloatField(label="Salary")
+    company_name = forms.CharField(
+        label="Company Name",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    location = forms.CharField(
+        label="Location",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    salary = forms.FloatField(
+        label="Salary",
+        widget=forms.NumberInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
 
 
 
 
 
 class XGBForm(forms.Form):
-    location = forms.CharField(label="Location")
-    skill = forms.CharField(label="Skill")
-    company_name = forms.CharField(label="Company Name")
-    platform_name = forms.CharField(label="Platform Name")
-    degree = forms.CharField(label="Degree")
+    location = forms.CharField(
+        label="Location",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    skill = forms.CharField(
+        label="Skill",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    company_name = forms.CharField(
+        label="Company Name",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    platform_name = forms.CharField(
+        label="Platform Name",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
+    degree = forms.CharField(
+        label="Degree",
+        widget=forms.TextInput(attrs={'style': 'width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;'})
+    )
 
 
 
@@ -57,6 +81,24 @@ class RegressionForm(forms.Form):
     salary_currency = forms.CharField(label="Salary Currency", max_length=10)
 
 
-class KMeansForm(forms.Form):
-    skill = forms.FloatField()
-    salary = forms.FloatField()
+# forms.py
+
+
+
+class RecommandationForm(forms.Form):
+    job_target = forms.CharField(
+        label="Target Job",
+        max_length=100,
+        widget=forms.TextInput(attrs={"placeholder": "Ex: AI Engineer"})
+    )
+    
+    user_skills = forms.CharField(
+        label="Your Skills (comma-separated)",
+        widget=forms.Textarea(attrs={
+            "rows": 3,
+            "placeholder": "Ex: Python, Pandas, REST, Deep Learning"
+        })
+    )
+
+
+

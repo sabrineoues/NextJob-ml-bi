@@ -7,5 +7,4 @@ urlpatterns = [
     path('knn/', views.knn_view, name='knn'),
     path('xgboost/', views.xgb_view, name='xgboost'),
     path('regression/', views.regression_view, name='regression'),
-    path('kmeans/', views.kmeans_view, name='kmeans'),
-]
+    path('recommandation/', views.recommandation_view, name='recommandation'),]

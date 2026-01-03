@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>MetricCareer - ML & BI Platform</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+
 </head>
 <body>
     <header>
@@ -20,8 +22,9 @@
                 <a href="/knn/" class="{% if request.path == '/knn/' %}active{% endif %}">Job Level Prediction</a>
                 <a href="/xgboost/" class="{% if request.path == '/xgboost/' %}active{% endif %}">Insurance Prediction</a>
                 <a href="/regression/" class="{% if request.path == '/regression/' %}active{% endif %}">Salary Prediction</a>
+                <a href="/recommandation/" class="{% if request.path == '/recommandation/' %}active{% endif %}">Recommendation</a>
             </nav>
-            <a href="https://app.powerbi.com/links/KXN1LK44bV?ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&pbi_source=linkShare" target="_blank" rel="noopener noreferrer" class="dashboard-btn">📊 BI Dashboard</a>
+            <a href="https://app.powerbi.com/links/KXN1LK44bV?ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&pbi_source=linkShare" target="_blank" rel="noopener noreferrer" class="dashboard-btn">📊Dashboard</a>
         </div>
     </header>
 
@@ -41,6 +44,7 @@
                 <a href="/knn/">→ Job Level Prediction</a>
                 <a href="/xgboost/">→ Insurance Prediction</a>
                 <a href="/regression/">→ Salary Prediction</a>
+                <a href="/recommandation/">→ Recommendation</a>
             </div>
             <div class="footer-section">
                 <h4>Contact</h4>

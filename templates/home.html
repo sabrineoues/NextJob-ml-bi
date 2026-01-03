@@ -3,104 +3,161 @@
 
 {% block content %}
 <main>
-    <!-- 🆕 HERO SECTION PREMIUM - ENGLISH -->
-    <section class="hero-section">
+    <!-- 🆕 SKILLS GAP ANALYZER - HERO SECTION -->
+    <section class="hero-section skills-hero">
         <div class="hero-content">
-            <h1 class="hero-title">🚀 Predict Your Career Future Instantly!</h1>
+            <h1 class="hero-title">🎯 Skills Gap Analyzer</h1>
             <p class="hero-subtitle">
-                Discover your <span class="highlight">Job Level</span>, Salary & Insurance benefits 
-                in <span class="highlight">30 seconds</span> with cutting-edge ML models
+                Enter your skills and target job → Get <span class="highlight">perfect matches</span> + 
+                <span class="highlight">skills to learn</span> in seconds!
             </p>
             
-            <!-- ✅ PREDICTION GUARANTEES -->
+            <!-- ✅ SKILLS GUARANTEES -->
             <div class="guarantees">
                 <div class="guarantee-item">
-                    <span class="guarantee-icon">✅</span>
-                    <div class="guarantee-title">95% Accuracy</div>
-                    <div class="guarantee-text">Validated on 10k+ real predictions</div>
+                    <span class="guarantee-icon">🎯</span>
+                    <div class="guarantee-title">Perfect Matches</div>
+                    <div class="guarantee-text">AI finds your ideal jobs instantly</div>
+                </div>
+                <div class="guarantee-item">
+                    <span class="guarantee-icon">📚</span>
+                    <div class="guarantee-title">Skills Roadmap</div>
+                    <div class="guarantee-text">Clear path to learn missing skills</div>
                 </div>
                 <div class="guarantee-item">
                     <span class="guarantee-icon">⚡</span>
-                    <div class="guarantee-title">Instant Results</div>
-                    <div class="guarantee-text">Less than 2s per prediction</div>
+                    <div class="guarantee-title">Instant Analysis</div>
+                    <div class="guarantee-text">Results in under 3 seconds</div>
                 </div>
                 <div class="guarantee-item">
-                    <span class="guarantee-icon">🔒</span>
-                    <div class="guarantee-title">100% Free</div>
-                    <div class="guarantee-text">No registration required</div>
-                </div>
-                <div class="guarantee-item">
-                    <span class="guarantee-icon">📱</span>
-                    <div class="guarantee-title">Mobile Ready</div>
-                    <div class="guarantee-text">Perfect on all devices</div>
+                    <span class="guarantee-icon">💰</span>
+                    <div class="guarantee-title">Salary Insights</div>
+                    <div class="guarantee-text">Understand your earning potential</div>
                 </div>
             </div>
 
-            <!-- ✅ MODEL PROMOTION -->
-            <div class="models-promo">
-                <h3 class="models-title">Our Elite ML Models</h3>
-                <div class="models-grid">
-                    <div class="model-card">
-                        <div class="model-icon">🎯</div>
-                        <div class="model-name">KNN</div>
-                        <div class="model-desc">Job Level Prediction (Junior/Mid/Senior)</div>
+            <!-- SKILLS FORM DIRECT -->
+            <div class="skills-form-hero">
+                {% if form %}
+                <form method="post" class="quick-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.target_job.label_tag }}
+                            {{ form.target_job }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.user_skills.label_tag }}
+                            {{ form.user_skills }}
+                        </div>
                     </div>
-                    <div class="model-card">
-                        <div class="model-icon">🛡️</div>
-                        <div class="model-name">XGBoost</div>
-                        <div class="model-desc">Insurance Coverage Prediction</div>
-                    </div>
-                    <div class="model-card">
-                        <div class="model-icon">💰</div>
-                        <div class="model-name">Regression</div>
-                        <div class="model-desc">Exact Salary </div>
-                    </div>
-                </div>
+                    <button type="submit" class="hero-btn">🔍 Analyze Skills Gap</button>
+                </form>
+                {% endif %}
             </div>
 
+            <!-- QUICK STATS -->
             <div class="hero-stats">
                 <div class="stat-item">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Jobs Indexed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">250+</span>
+                    <span class="stat-label">Skills Tracked</span>
+                </div>
+                <div class="stat-item">
                     <span class="stat-number">95%</span>
-                    <span class="stat-label">Accuracy</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">Models</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">30s</span>
-                    <span class="stat-label">Total</span>
+                    <span class="stat-label">Match Accuracy</span>
                 </div>
             </div>
-            
-            <a href="/knn/" class="hero-btn">Start Predicting Now ⚡</a>
         </div>
     </section>
 
-    <!-- EXISTING SECTIONS - ENGLISH -->
+    {% if results %}
+    <!-- 🆕 RESULTS SECTION -->
+    <section class="results-section">
+        <h2 class="result-header">🎯 Results for "{{ results.target_job }}"</h2>
+        
+        <div class="match-score">{{ results.target_score|floatformat:1 }}% Match</div>
+        
+        <div class="job-stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ results.matching_skills|length }}</div>
+                <div class="stat-label">Your Skills</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ results.missing_skills|length }}</div>
+                <div class="stat-label">To Learn</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ results.recommendations|length }}</div>
+                <div class="stat-label">Job Matches</div>
+            </div>
+        </div>
+
+        <div class="recommendations-grid">
+            {% for rec in results.recommendations %}
+            <div class="job-card">
+                <div class="job-title">💼 {{ rec.job }}</div>
+                <div class="job-score">{{ rec.score|floatformat:1 }}%</div>
+                
+                {% if rec.missing_skills %}
+                <div class="skills-section">
+                    <div class="section-title">📚 Skills to Learn:</div>
+                    <div class="skills-learn">
+                        <h4>You match this job but need to learn:</h4>
+                        {% for skill in rec.missing_skills %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="skills-section perfect-match">
+                    <div class="section-title">✅ Perfect Match!</div>
+                    <div class="skills-learn">
+                        <h4>You have ALL required skills!</h4>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- OTHER PREDICTION SECTIONS -->
     <section id="knn" class="section">
         <div class="section-content">
             <h2>Job Level Prediction</h2>
-            <p>Junior 🟢 Mid 🟡 Senior 🔴 → Fill form, get instant prediction! 🎮</p>
-            <a href="/knn/" class="action-btn">Predict My Level</a>
+            <p>Junior 🟢 Mid 🟡 Senior 🔴 → Instant ML prediction!</p>
+            <a href="/knn/" class="action-btn">Predict Level →</a>
         </div>
     </section>
 
     <section id="xgboost" class="section">
         <div class="section-content">
             <h2>Insurance Prediction</h2>
-            <p>Does your future job offer insurance? XGBoost reveals the truth! ✨</p>
-            <a href="/xgboost/" class="action-btn">Predict Insurance</a>
+            <p>Will your job include insurance? XGBoost knows!</p>
+            <a href="/xgboost/" class="action-btn">Check Insurance →</a>
         </div>
     </section>
 
     <section id="regression" class="section">
         <div class="section-content">
             <h2>Salary Prediction</h2>
-            <p>Know your worth! Predict your salary → Negotiate like a pro! 🏅</p>
-            <a href="/regression/" class="action-btn">Predict My Salary</a>
+            <p>Know your market value before negotiating! 💰</p>
+            <a href="/regression/" class="action-btn">Predict Salary →</a>
         </div>
     </section>
+    <!-- 🆕 SKILLS GAP ANALYZER SECTION -->
+<section id="skills" class="section">
+    <div class="section-content">
+        <h2>Skills Gap Analyzer</h2>
+        <p>Enter your skills → Get <strong>perfect job matches</strong> + <strong>skills to learn</strong> instantly! 🎯</p>
+        <a href="/recommandation/" class="action-btn">Analyze Skills →</a>
+    </div>
+</section>
+
 </main>
 {% endblock %}
-
